@@ -14,23 +14,6 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
         public UnityTouchController(TrackingState trackingState, Handedness controllerHandedness, IMixedRealityInputSource inputSource = null, MixedRealityInteractionMapping[] interactions = null)
                 : base(trackingState, controllerHandedness, inputSource, interactions)
         {
-            if (InputSystem?.InputSystemProfile.GesturesProfile != null)
-            {
-                for (int i = 0; i < InputSystem.InputSystemProfile.GesturesProfile.Gestures.Length; i++)
-                {
-                    var gesture = InputSystem.InputSystemProfile.GesturesProfile.Gestures[i];
-
-                    switch (gesture.GestureType)
-                    {
-                        case GestureInputType.Hold:
-                            holdingAction = gesture.Action;
-                            break;
-                        case GestureInputType.Manipulation:
-                            manipulationAction = gesture.Action;
-                            break;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -77,6 +60,24 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
         public override void SetupDefaultInteractions(Handedness controllerHandedness)
         {
             AssignControllerMappings(DefaultInteractions);
+
+            if (InputSystem?.InputSystemProfile.GesturesProfile != null)
+            {
+                for (int i = 0; i < InputSystem.InputSystemProfile.GesturesProfile.Gestures.Length; i++)
+                {
+                    var gesture = InputSystem.InputSystemProfile.GesturesProfile.Gestures[i];
+
+                    switch (gesture.GestureType)
+                    {
+                        case GestureInputType.Hold:
+                            holdingAction = gesture.Action;
+                            break;
+                        case GestureInputType.Manipulation:
+                            manipulationAction = gesture.Action;
+                            break;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -88,6 +89,11 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
             isTouched = true;
             InputSystem?.RaiseGestureStarted(this, holdingAction);
             isHolding = true;
+        }
+
+        public void StillTouching()
+        {
+            InputSystem?.RaisePointerDown(InputSource.Pointers[0], Interactions[2].MixedRealityInputAction);
         }
 
         /// <summary>

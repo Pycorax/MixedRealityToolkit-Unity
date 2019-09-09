@@ -49,10 +49,9 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
                 {
                     case TouchPhase.Began:
                         AddTouchController(touch, ray);
+                        StartTouchData(touch, ray);
                         break;
                     case TouchPhase.Stationary:
-                        StartTouchData(touch,ray);
-                        break;
                     case TouchPhase.Moved:
                         UpdateTouchData(touch, ray);
                         break;
@@ -136,8 +135,6 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
             }
 
             inputSystem?.RaiseSourceDetected(controller.InputSource, controller);
-            //controller.StartTouch();
-            //UpdateTouchData(touch, ray);
         }
 
         private void UpdateTouchData(Touch touch, Ray ray)
@@ -149,6 +146,7 @@ namespace Microsoft.MixedReality.Toolkit.Input.UnityInput
                 return;
             }
 
+            controller.StillTouching();
             controller.TouchData = touch;
             var pointer = (IMixedRealityTouchPointer)controller.InputSource.Pointers[0];
             controller.ScreenPointRay = pointer.TouchRay = ray;

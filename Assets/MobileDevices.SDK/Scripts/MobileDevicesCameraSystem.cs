@@ -10,16 +10,16 @@ using UnityEngine;
 using UnityEngine.SpatialTracking;
 using UnityEngine.XR.ARFoundation;
 
-namespace Com.Reseul.MobileDevices.CameraSystem
+namespace Microsoft.MixedReality.Toolkit.CameraSystem
 {
     public class MobileDevicesCameraSystem : BaseCoreSystem, IMixedRealityCameraSystem
     {
-        private ARCameraBackground _aRCameraBackground;
-        private ARCameraManager _aRCameraManager;
-        private GameObject _arSession;
+        private ARCameraBackground arCameraBackground;
+        private ARCameraManager arCameraManager;
+        private GameObject arSession;
 
-        private GameObject _arSessionOrigin;
-        private TrackedPoseDriver _trackedPoseDriver;
+        private GameObject arSessionOrigin;
+        private TrackedPoseDriver trackedPoseDriver;
 
         private MixedRealityCameraProfile cameraProfile;
 
@@ -96,17 +96,17 @@ namespace Com.Reseul.MobileDevices.CameraSystem
             if (MixedRealityPlayspace.Transform.GetComponentInChildren<ARSession>() == null) return;
 
             CameraCache.Main.transform.parent = MixedRealityPlayspace.Transform;
-            Object.DestroyImmediate(_trackedPoseDriver);
-            Object.DestroyImmediate(_aRCameraBackground);
-            Object.DestroyImmediate(_aRCameraManager);
-            Object.DestroyImmediate(_arSessionOrigin);
-            Object.DestroyImmediate(_arSession);
+            Object.Destroy(trackedPoseDriver);
+            Object.Destroy(arCameraBackground);
+            Object.Destroy(arCameraManager);
+            Object.Destroy(arSessionOrigin);
+            Object.Destroy(arSession);
 
-            _arSessionOrigin = null;
-            _arSession = null;
-            _aRCameraBackground = null;
-            _aRCameraManager = null;
-            _trackedPoseDriver = null;
+            arSessionOrigin = null;
+            arSession = null;
+            arCameraBackground = null;
+            arCameraManager = null;
+            trackedPoseDriver = null;
         }
 
         private void ApplySettingsForARFoundation()
@@ -114,27 +114,27 @@ namespace Com.Reseul.MobileDevices.CameraSystem
             if (MixedRealityPlayspace.Transform.GetComponentInChildren<ARSessionOrigin>() != null) return;
             if (MixedRealityPlayspace.Transform.GetComponentInChildren<ARSession>() != null) return;
 
-            //Setting Camera for ARFoundation.
-            _trackedPoseDriver = CameraCache.Main.gameObject.AddComponent<TrackedPoseDriver>();
-            _aRCameraManager = CameraCache.Main.gameObject.AddComponent<ARCameraManager>();
-            _aRCameraBackground = CameraCache.Main.gameObject.AddComponent<ARCameraBackground>();
+            // Setting Camera for ARFoundation.
+            trackedPoseDriver = CameraCache.Main.gameObject.AddComponent<TrackedPoseDriver>();
+            arCameraManager = CameraCache.Main.gameObject.AddComponent<ARCameraManager>();
+            arCameraBackground = CameraCache.Main.gameObject.AddComponent<ARCameraBackground>();
 
-            _arSessionOrigin = new GameObject();
-            _arSessionOrigin.name = "AR Session Origin";
-            _arSessionOrigin.transform.parent = MixedRealityPlayspace.Transform;
-            CameraCache.Main.transform.parent = _arSessionOrigin.transform;
-            var arSessionOrigin = _arSessionOrigin.AddComponent<ARSessionOrigin>();
+            this.arSessionOrigin = new GameObject();
+            this.arSessionOrigin.name = "AR Session Origin";
+            this.arSessionOrigin.transform.parent = MixedRealityPlayspace.Transform;
+            CameraCache.Main.transform.parent = this.arSessionOrigin.transform;
+            var arSessionOrigin = this.arSessionOrigin.AddComponent<ARSessionOrigin>();
             arSessionOrigin.camera = CameraCache.Main;
 
-            _arSession = new GameObject();
-            _arSession.name = "AR Session";
-            _arSession.transform.parent = MixedRealityPlayspace.Transform;
-            var arSessionComp = _arSession.AddComponent<ARSession>();
+            arSession = new GameObject();
+            arSession.name = "AR Session";
+            arSession.transform.parent = MixedRealityPlayspace.Transform;
+            var arSessionComp = arSession.AddComponent<ARSession>();
             arSessionComp.attemptUpdate = true;
             arSessionComp.matchFrameRate = true;
-            _arSession.AddComponent<ARInputManager>();
+            arSession.AddComponent<ARInputManager>();
 
-            _trackedPoseDriver.SetPoseSource(TrackedPoseDriver.DeviceType.GenericXRDevice,
+            trackedPoseDriver.SetPoseSource(TrackedPoseDriver.DeviceType.GenericXRDevice,
                 TrackedPoseDriver.TrackedPose.ColorCamera);
         }
     }
